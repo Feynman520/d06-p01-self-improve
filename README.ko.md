@@ -9,7 +9,7 @@
 ## 설치
 
 ```
-/plugin marketplace add <이 저장소 주소>
+/plugin marketplace add Feynman520/self-improve
 /plugin install self-improve@self-improve
 ```
 

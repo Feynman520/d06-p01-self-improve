@@ -2,7 +2,7 @@
 
 self-improve의 텔레메트리는 Google Apps Script(GAS) 웹 앱 URL로 익명화 이벤트를 POST하고, GAS가 구글 시트에 1행씩 적재한다. 서버 비용 0.
 
-> **현재 상태: 배포 완료 (2026-07-07).** 수신 시트 `self-improve-telemetry`(sejunham@gmail.com Drive), 스크립트 `self-improve telemetry receiver`(standalone, v2), URL은 `server/lib/telemetry.js`의 `TELEMETRY_URL`에 기입됨. 아래는 재배포·이전 시 절차.
+> **현재 상태: 배포 완료 (2026-07-07).** 수신 시트 `self-improve-telemetry` + standalone 스크립트(v2)가 개발자 계정에서 가동 중이며, URL은 `server/lib/telemetry.js`의 `TELEMETRY_URL`에 기입됨. 아래는 재배포·이전 시 절차.
 
 ## 배포 절차 (수동 — 컨테이너 바인딩 방식)
 

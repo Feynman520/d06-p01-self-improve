@@ -9,7 +9,7 @@ The moment you fix or redo Claude's output is the most valuable data about the g
 ## Install
 
 ```
-/plugin marketplace add <this-repo-url>
+/plugin marketplace add Feynman520/self-improve
 /plugin install self-improve@self-improve
 ```
 
