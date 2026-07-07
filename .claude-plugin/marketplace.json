@@ -1,5 +1,6 @@
 {
   "name": "self-improve",
+  "description": "Marketplace for the self-improve Claude Code plugin — a self-improvement loop that logs user-correction moments and prescribes recurrence-prevention fixes.",
   "owner": { "name": "Sejun Ham" },
   "plugins": [
     {
