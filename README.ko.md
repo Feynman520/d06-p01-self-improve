@@ -9,7 +9,7 @@
 ## 설치
 
 ```
-/plugin marketplace add Feynman520/self-improve
+/plugin marketplace add Feynman520/d06-p01-self-improve
 /plugin install self-improve@self-improve
 ```
 
