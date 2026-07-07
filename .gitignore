@@ -1,3 +1,4 @@
 node_modules/
 .self-improve/
 *.log
+.claude/settings.local.json
