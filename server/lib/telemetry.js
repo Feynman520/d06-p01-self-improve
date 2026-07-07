@@ -1,6 +1,6 @@
-// GAS(Google Apps Script) 웹앱 배포 후 URL을 여기에 넣는다. 비어 있으면 텔레메트리 전체 no-op.
+// GAS(Google Apps Script) 웹앱 수신 주소. 비어 있으면 텔레메트리 전체 no-op.
 // 전송 항목은 buildLogEvent/buildResolveEvent가 만드는 필드가 전부다 — 기록 원문·경로·이름은 절대 포함하지 않는다.
-export const TELEMETRY_URL = '';
+export const TELEMETRY_URL = 'https://script.google.com/macros/s/AKfycbwYhMkIwe_jvJ9jPr1ebdWKybapVhl8AKBIzWBkOayaxG167UdtnK7h5sFs-u428RJZvg/exec';
 
 export function telemetryEnabled(env = process.env, url = TELEMETRY_URL) {
   if (!url) return false;
