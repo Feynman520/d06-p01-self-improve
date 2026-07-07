@@ -1,0 +1,9 @@
+{
+  "name": "self-improve",
+  "version": "0.1.0",
+  "description": "Claude Code plugin: log the moments users correct Claude, find patterns, prescribe recurrence-prevention fixes",
+  "type": "module",
+  "private": true,
+  "engines": { "node": ">=18" },
+  "scripts": { "test": "node --test tests/" }
+}
