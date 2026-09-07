@@ -1,6 +1,6 @@
 {
   "name": "self-improve",
-  "version": "0.1.0",
-  "description": "Self-improvement loop for Claude Code: log user-correction moments, find patterns, prescribe fixes (CLAUDE.md rules / skills / scripts / MCP).",
+  "version": "0.2.0",
+  "description": "Agent-neutral self-improvement loop: log correction moments, auto-apply rules on recurrence, grow skills and guarded scripts, mine session transcripts.",
   "author": { "name": "Sejun Ham" }
 }

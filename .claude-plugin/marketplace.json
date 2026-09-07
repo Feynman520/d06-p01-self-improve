@@ -1,12 +1,12 @@
 {
   "name": "self-improve",
-  "description": "Marketplace for the self-improve Claude Code plugin — a self-improvement loop that logs user-correction moments and prescribes recurrence-prevention fixes.",
+  "description": "Marketplace for self-improve — an agent-neutral self-improvement loop: log correction moments, auto-apply rules on recurrence, grow skills and guarded scripts, mine session transcripts.",
   "owner": { "name": "Sejun Ham" },
   "plugins": [
     {
       "name": "self-improve",
       "source": "./",
-      "description": "Self-improvement loop for Claude Code: log user-correction moments, find patterns, prescribe fixes."
+      "description": "Agent-neutral self-improvement loop: log correction moments, auto-apply rules on recurrence, grow skills and guarded scripts, mine session transcripts."
     }
   ]
 }

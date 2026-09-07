@@ -2,106 +2,92 @@
 
 **English: [README.md](README.md)**
 
-당신의 수정 요청을 영구적인 개선으로 바꾸는 클로드코드 플러그인.
+코딩 에이전트(클로드코드·코덱스)를 위한 **에이전트 중립 자기개선 루프**. 에이전트와 함께 일할수록 에이전트가 사용자에게 맞춰집니다. 사용자가 결과를 고친 순간을 기록하고, 같은 교훈이 다시 나타나면 **자동으로 적용**합니다 — 지시 파일의 규칙 한 줄, 스킬, 또는 가드가 달린 스크립트로. 한 줄 알림이 뜨고, 한 마디로 되돌릴 수 있습니다.
 
-클로드의 결과물을 고치거나 다시 시키는 순간이 바로 "내가 원한 것"과 "클로드가 만든 것"의 차이가 드러나는 가장 값진 데이터입니다. 지금은 이 데이터가 대화가 끝나면 사라집니다. self-improve는 이 순간들을 붙잡아 기록하고, 반복 패턴을 찾고, 재발 방지책(CLAUDE.md 규칙 / 스킬 / 스크립트 / MCP 도구)을 처방합니다.
+모든 데이터는 사용자 PC에만 있습니다. 텔레메트리는 없습니다.
+
+## 어떻게 돌아가나
+
+```text
+① 기록   — 에이전트가 정정 순간을 기록한다 (또는 야간 채굴기가 세션 기록에서 찾아낸다)
+      ↓
+② 감지   — 서버가 같은 교훈의 재발을 알아챈다 (2회째; 오해·취향 교훈은 3회째)
+      ↓
+③ 적용   — 해당 프로젝트들을 모두 덮는 가장 좁은 AGENTS.md/CLAUDE.md의 관리 구역에 규칙 한 줄을 쓴다
+      ↓
+④ 성장   — 절차형 교훈은 스킬로(모든 에이전트에 동기화), 반복 수작업은 가드 스크립트로
+      ↓
+⑤ 학습   — 쓸 때마다 성공/지적을 보고; 스크립트는 신뢰를 얻고, 나쁜 산출물은 퇴역하며, "R-003 빼"로 무엇이든 되돌린다
+```
+
+| 요소 | 방식 |
+|---|---|
+| 기록 | 교훈 1건 = 마크다운 1파일, `SELF_IMPROVE_DIR/records/` (기본 = 현재 폴더의 `.self-improve/`) |
+| 익음 판정 | 실제 한국어·영어 교훈으로 조정한 단어 겹침 유사도. 적용 전 모델이 "같은 교훈인가"를 확인 |
+| 규칙 | AGENTS.md(또는 CLAUDE.md)의 `<!-- self-improve:begin … end -->` 구역 안에만 씀. 사람 글은 건드리지 않음. 파일당 상한·잠금 |
+| 레벨 | 지시 파일이 이미 있는 가장 좁은 공통 조상 폴더. `root` 위로는 올라가지 않음 |
+| 스킬 | `SELF_IMPROVE_DIR/skills/<이름>/SKILL.md`에 원본, 각 에이전트 스킬 폴더에 `si-<이름>`으로 복사 |
+| 스크립트 | `SELF_IMPROVE_DIR/scripts/`, 반드시 `_guard.mjs`/`_guard.py` 사용: 기본 미리보기, `--apply`로 실행, 성공 3회면 자동 신뢰 |
+| 처방 대장 | `registry.json`이 산출물 ↔ 기록 ↔ 버전 ↔ 신뢰를 관리. 같은 교훈은 새로 만들지 않고 기존 산출물을 고침 |
+| 채굴 | `cli.js nightly`가 클로드(`projects/*.jsonl`)·코덱스(`sessions/**/rollout-*.jsonl`) 세션 기록에서 사용자 정정·도구 오류·반복 도구 순서를 찾아 후보 대기열에 넣음 |
+| 자동화 금지 | 시크릿·권한·배포·삭제·과금 — 지시문이 자동 산출물에 넣지 못하게 함 |
+
+## MCP 도구
+
+| 도구 | 용도 |
+|---|---|
+| `log` | 기록 저장. `ripe`(재발 도달)와 `recurrence_of_resolved`(해결된 교훈 재발)를 돌려줌 |
+| `pending` | 세션 시작 시 호출: 익은 패턴, 격상 대상, 채굴 후보(≤3), 퇴역 제안 |
+| `apply_rule` | 관리 구역에 규칙 기입, 대장 등록, 기록 해결 |
+| `register_artifact` | 스킬(에이전트들에 동기화) 또는 가드 스크립트 등록 |
+| `feedback` | 산출물에 `success`/`correction` → 신뢰·승격·퇴역 |
+| `revoke` | 산출물 되돌리기. 기록은 `rejected`가 되어 다시 적용되지 않음 |
+| `dismiss` | 채굴 후보 버리기 |
+| `search` / `stats` / `resolve` | 기록 조회, 재발률·산출물 수, 수동 해결(규칙 실재 검증) |
 
 ## 설치
 
 ```
-/plugin marketplace add Feynman520/d06-p01-self-improve
-/plugin install self-improve@self-improve
+git clone https://github.com/Feynman520/d06-p01-self-improve
+cd d06-p01-self-improve
+set SELF_IMPROVE_DIR=C:\중앙\저장소          # 권장 (모든 프로젝트가 한 저장소를 씀)
+node server/cli.js install --root C:\작업공간 --codex --schedule
 ```
 
-Node.js 18 이상 필요. 런타임 의존성이 0개라 npm install이 필요 없습니다.
+- `--root` 작업공간 루트 `AGENTS.md`의 관리 구역에 에이전트 지시문을 씀(없으면 `AGENTS.md` + `CLAUDE.md` 껍데기 생성). **모든 에이전트가 같은 지시문을 읽음.**
+- `--codex` `$CODEX_HOME/config.toml`에 MCP 서버 등록.
+- `--schedule` 야간 채굴 예약 등록(Windows 작업 스케줄러; 다른 OS는 crontab 한 줄 출력).
+- 클로드코드: `/plugin marketplace add Feynman520/d06-p01-self-improve` → `/plugin install self-improve@self-improve`, 플러그인 env에 `SELF_IMPROVE_DIR` 추가.
 
-## 동작 방식
+Node.js 18 이상. 런타임 의존성 0.
 
-**하이브리드 기록** — 클로드가 자동으로 감지·기록하고(MCP 서버에 내장된 항상-켜짐 지침), `/self-improve-log`로 수동 기록도 가능합니다.
-
-클로드가 감시하는 4가지 순간:
-
-1. 결과를 수정·재요청할 때 ("아니, 그게 아니라", "다시 해줘")
-2. 미래 규칙을 선언할 때 ("앞으로는 항상 ~")
-3. 도구·명령이 실패해서 우회했을 때
-4. 같은 수작업이 또 반복될 때
-
-노이즈 필터: 새 요구 추가, 일회성 취향 조정은 기록하지 **않습니다**. 판별 기준은 **한 문장 테스트** — 다음에도 써먹을 교훈을 한 문장으로 쓸 수 없으면 기록하지 않습니다. 기록 후에는 한 줄 알림(`📝 개선점 기록: "..." (분류)`)이 출력되며, "기록하지 마"라고 하면 즉시 삭제됩니다.
-
-### 분류 5종 (고정)
-
-| 분류 | 의미 |
-|---|---|
-| 오해 | 요구를 잘못 이해함 |
-| 지식 부족 | 사용자·환경 고유 사실을 몰랐음 |
-| 도구 실패 | 도구·명령 실패 |
-| 환경 문제 | 설정·경로·권한 문제 |
-| 반복 비효율 | 같은 수작업 반복 (자동화 후보) |
-
-### MCP 도구
-
-| 도구 | 역할 |
-|---|---|
-| `log` | 기록 저장. 유사한 과거 기록을 자동으로 `related`에 연결 — 반복 횟수가 패턴의 증거 |
-| `search` | 키워드/분류/폴더/상태 필터 검색 |
-| `stats` | 분류별·폴더별·월별 집계 |
-| `resolve` | 해결 표시 + 적용한 처방 기입 (복수 id 일괄 처리) |
-
-### 스킬
-
-- `/self-improve-log` — 방금 대화의 개선점을 즉시 기록.
-- `/self-improve-report` — 정기 보고: open 기록을 패턴으로 묶고 **처방 사다리**(CLAUDE.md 규칙 → 스킬 → 스크립트/라이브러리 → MCP; 항상 통하는 가장 가벼운 처방부터)를 올라가며 효과 대비 비용 순으로 제안합니다. 해결됐던 문제가 재발하면 최상단에 ⚠️ 처방 무효 경고를 표시합니다. 보고서는 `reports/YYYY-MM-DD-보고.md`로 저장됩니다.
-
-**권장 주기:** 기록 10건 이상 또는 2~4주마다 `/self-improve-report` 실행.
-
-## 저장
-
-기록 1건 = 마크다운 파일 1개 (frontmatter + 본문 4절), 전부 로컬 저장.
-
-- 기본: 현재 프로젝트의 `.self-improve/` (`records/`, `reports/`)
-- 변경: 환경변수 `SELF_IMPROVE_DIR`에 중앙 폴더 지정
-
-```markdown
----
-id: 2026-07-07-001
-date: 2026-07-07
-project: C:\path\to\project
-category: 오해
-status: open
-related:
-resolution:
----
-
-## 무슨 일이 있었나
-## 사용자가 진짜 원한 것
-## 교훈
-## 해결책 후보
-```
-
-## 텔레메트리
-
-플러그인 개선을 위해 익명 이벤트를 개발자의 구글 시트(Google Apps Script 경유)로 전송합니다. **기본값: 켜짐** (이 플러그인의 사용자인 강의 수강자에게는 사전 안내됩니다).
-
-**전송되는 항목 전문 (이것이 전부입니다):**
-
-- 이벤트 종류(`log`/`resolve`), 분류, **익명화된** 한 문장 교훈(전송 전 클로드가 이름·경로·이메일·파일 내용을 모두 제거), 처방 종류, 플러그인 버전, 대화 언어, 타임스탬프.
-
-기록 파일 원문, 프로젝트 경로, 파일 내용, 신원 정보는 **절대** 전송되지 않습니다.
-
-**끄기** — 환경변수 1개면 됩니다:
+## CLI
 
 ```
-SELF_IMPROVE_TELEMETRY=off
+node server/cli.js install [--root DIR] [--codex] [--schedule]
+node server/cli.js mine [--days N]      # 지금 세션 기록 채굴
+node server/cli.js nightly              # 채굴 + 세션 연결 + <저장소>/logs 기록
+node server/cli.js backfill [--apply]   # 첫 실행: 기존 열린 기록 군집 → 제안서 (기본 dry-run)
+node server/cli.js status
 ```
 
-소스(`server/lib/telemetry.js`)에 수신 URL이 설정돼 있지 않으면 텔레메트리는 전송 시도 자체가 없는 no-op입니다.
+## 설정 (`SELF_IMPROVE_DIR/config.json`)
 
-## 로드맵 (v2 후보)
+```json
+{
+  "root": "C:\\작업공간",
+  "path_aliases": { "C:\\옛\\작업공간": "C:\\작업공간" },
+  "rule_cap": 30,
+  "ripe_threshold": { "default": 2, "오해": 3 },
+  "mine_days": 30,
+  "candidates_per_session": 3,
+  "retire_after_days": 60
+}
+```
 
-- 칭찬(성공 패턴) 기록
-- 텔레메트리 대시보드
-- 텔레메트리 전송 검증
-- 훅 기반 감지 옵션
+## 되돌리기
+
+에이전트에게 말하면 됩니다: `규칙 R-003 빼` / `그 스킬 빼`. 규칙 줄·스킬·스크립트가 제거되고 산출물은 퇴역, 기록은 `rejected`로 바뀝니다.
 
 ## 라이선스
 

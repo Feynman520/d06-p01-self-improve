@@ -35,7 +35,7 @@ test('MCP handshake → tools/list → log → search 왕복', async () => {
     assert.match(init.result.instructions, /log/);
 
     const list = await rpc(proc, { jsonrpc: '2.0', id: 2, method: 'tools/list' });
-    assert.deepEqual(list.result.tools.map((t) => t.name).sort(), ['log', 'resolve', 'search', 'stats']);
+    assert.deepEqual(list.result.tools.map((t) => t.name).sort(), ['apply_rule', 'dismiss', 'feedback', 'log', 'pending', 'register_artifact', 'resolve', 'revoke', 'search', 'stats']);
 
     const logRes = await rpc(proc, { jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'log', arguments: { category: '오해', lesson: '보고서는 표 형태를 기본으로 한다', project: 'C:\\p' } } });
     const logged = JSON.parse(logRes.result.content[0].text);

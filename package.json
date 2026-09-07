@@ -1,7 +1,7 @@
 {
   "name": "self-improve",
-  "version": "0.1.0",
-  "description": "Claude Code plugin: log the moments users correct Claude, find patterns, prescribe recurrence-prevention fixes",
+  "version": "0.2.0",
+  "description": "Agent-neutral self-improvement loop (Claude Code / Codex): log correction moments, auto-apply rules on recurrence, grow skills and guarded scripts, mine session transcripts",
   "type": "module",
   "private": true,
   "engines": { "node": ">=18" },
