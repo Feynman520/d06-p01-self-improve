@@ -25,3 +25,9 @@ created: '2026-09-04'
 
 
 > 상위 지침 로드(독립 git 저장소): 정본 = R07 AGENTS.md 〈독립 git 저장소 P의 상위 지침 로드〉(2026-09-04 Q8).
+
+<!-- self-improve:begin — 자기개선 플러그인이 자동으로 관리하는 구역입니다. 손으로 고치지 마세요. 규칙을 빼려면 에이전트에게 "규칙 R-001 빼"라고 말하세요. -->
+## 자기개선 규칙 (자동 적용)
+
+- [R-006] 플러그인 MCP 서버는 plugin.json 인라인이 아니라 플러그인 루트 .mcp.json(mcpServers 래퍼)에 선언하고, 개발 폴더에서의 중복 인식은 .claude/settings.json의 disabledMcpjsonServers로 막는다. (근거 기록: 2026-07-07-001, 2026-07-07-002)
+<!-- self-improve:end -->
