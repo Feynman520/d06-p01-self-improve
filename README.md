@@ -92,3 +92,7 @@ Say to the agent: `규칙 R-003 빼` / `remove rule R-003` / `그 스킬 빼`. T
 ## License
 
 MIT
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute and [SECURITY.md](SECURITY.md) for reporting security issues.

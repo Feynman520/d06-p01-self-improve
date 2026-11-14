@@ -92,3 +92,7 @@ node server/cli.js status
 ## 라이선스
 
 MIT
+
+## 기여
+
+의견과 PR 안내는 [CONTRIBUTING.md](CONTRIBUTING.md)를, 보안 문제 신고는 [SECURITY.md](SECURITY.md)를 봐 주세요.
